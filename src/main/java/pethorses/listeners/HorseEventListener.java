@@ -52,8 +52,10 @@ public class HorseEventListener implements Listener {
         Player owner = (Player) horse.getOwner();
         if (owner == null || attacker.getUniqueId().equals(owner.getUniqueId())) return;
 
-        event.setCancelled(true);
-        attacker.sendMessage(localizationManager.getMessage("horse.not_yours"));
+        if (!plugin.getConfigManager().isOtherPlayersDamageHorsesAllowed()) {
+            event.setCancelled(true);
+            attacker.sendMessage(localizationManager.getMessage("horse.not_yours"));
+        }
     }
 
     @EventHandler
