@@ -47,10 +47,20 @@ public class HorseEventListener implements Listener {
     @EventHandler
     public void onHorseDamage(EntityDamageByEntityEvent event) {
         if (!(event.getEntity() instanceof Horse horse) || !horse.isTamed()) return;
-        if (!(event.getDamager() instanceof Player attacker)) return;
 
         Player owner = (Player) horse.getOwner();
-        if (owner == null || attacker.getUniqueId().equals(owner.getUniqueId())) return;
+        if (owner == null) return;
+
+        Player attacker = null;
+        if (event.getDamager() instanceof Player p) {
+            attacker = p;
+        } else if (event.getDamager() instanceof Projectile projectile && projectile.getShooter() instanceof Player shooter) {
+            attacker = shooter;
+        } else if (event.getDamager() instanceof Trident trident && trident.getShooter() instanceof Player shooter) {
+            attacker = shooter;
+        }
+
+        if (attacker == null || attacker.getUniqueId().equals(owner.getUniqueId())) return;
 
         if (!plugin.getConfigManager().isOtherPlayersDamageHorsesAllowed()) {
             event.setCancelled(true);
